@@ -15,13 +15,16 @@ function waitForImage() {
 	local tag=$2
 	echo "waiting for image $tag to build "
 	while true; do
+		echo "calling quay api..."
 		local status=$(curl -H "Authorization: Bearer $AUTH_TOKEN" -s -o /dev/null -w "%{http_code}" https://quay.io/api/v1/repository/${imageRepository}/tag/$tag/images)
+		echo "The API address called is https://quay.io/api/v1/repository/${imageRepository}/tag/$tag/images"
+		echo "The status is $status"
 		if [[ $status == 200 ]]; then
 			echo "success"
 			break
 		elif [[ $status == 404 ]]; then
 			echo -n "."
-			sleep 3
+			sleep 30
 			continue
 		else
 			die "unexpected error status: $status"
